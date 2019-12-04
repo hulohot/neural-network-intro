@@ -1,4 +1,5 @@
 # Authors    : Ethan Brugger & Mitch Merrick
+# IDs        : 010773000 & 010752373
 # Date       : 12/3/19
 # Class      : AI CSCE 4613
 # Assignment : Assignment 3
