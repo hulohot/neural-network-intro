@@ -1,13 +1,12 @@
-# This neural Network solves the classic X-OR neural network problem
-# Written in python with the following dependencies
-# - MatplotLib
-# - Numpy
+# Authors    : Ethan Brugger & Mitch Merrick
+# Date       : 12/3/19
+# Class      : AI CSCE 4613
+# Assignment : Assignment 3
 
 import numpy as np
 import matplotlib.pyplot as plt
 
-np.random.seed(0)
-
+# np.random.seed(0)
 
 def sigmoid(val):
     return 1/(1 + np.exp(-val))
@@ -25,19 +24,32 @@ trainInput = np.array([[-2, 4], [-1, 4], [0, 4], [1, 4], [2, 4],
                        [-2, 0], [-1, 0], [0, 0], [1, 0], [2, 0],
                        [-2, -1], [-1, -1], [0, -1], [1, -1], [2, -1],
                        [-2, -2], [-1, -2], [0, -2], [1, -2], [2, -2]])
-expectedOuput = np.array([[1], [1], [1], [1], [1],
-                          [-1], [1], [1], [1], [-1],
-                          [-1], [1], [1], [1], [-1],
-                          [-1], [1], [1], [1], [-1],
-                          [-1], [-1], [1], [-1], [-1],
-                          [-1], [-1], [-1], [-1], [-1],
-                          [-1], [-1], [-1], [-1], [-1]])
+expectedOutput = np.array([[1], [1], [1], [1], [1],
+                           [-1], [1], [1], [1], [-1],
+                           [-1], [1], [1], [1], [-1],
+                           [-1], [1], [1], [1], [-1],
+                           [-1], [-1], [1], [-1], [-1],
+                           [-1], [-1], [-1], [-1], [-1],
+                           [-1], [-1], [-1], [-1], [-1]])
 
+
+# Creating Test cases
+testInput = np.array([[0, 0]])
+xSpace = np.linspace(-2, 2, 30)
+ySpace = np.linspace(-2, 4, 30)
+for xP in xSpace:
+    for yP in ySpace:
+        if(xP == 0 and yP == 0):
+            pass
+        testInput = np.append(testInput, [[xP, yP]], axis=0)
 
 # Define nn architecture
 inputNodes, hiddenNodes, outputNodes = 2, 5, 1
 epochs = 10000
 learningRate = 0.1
+
+# Weight Convergence
+weightConvergence = [100]
 
 # Initalize weights
 # All random weights are 0 <= x <= 1
@@ -65,7 +77,7 @@ def forwardPropogation(inputData, hiddenWeights, hiddenBias, outputWeights, outp
 def backpropogation(inputData, hiddenWeights, hiddenBias, outputWeights, outputBias, hiddenLayerOutput, predictedOutput):
     # Calculate the error between the expected and actual output
     # This section aka Backpropogation
-    error = expectedOuput - predictedOutput
+    error = expectedOutput - predictedOutput
 
     # Using gradient decent to figure out what the output needs to change by
     deltaPredictedOutput = error * sigmoidDerivative(predictedOutput)
@@ -84,7 +96,7 @@ def backpropogation(inputData, hiddenWeights, hiddenBias, outputWeights, outputB
                          keepdims=True) * learningRate
 
 
-def x_or_neural_network(inputData, hiddenWeights, hiddenBias, outputWeights, outputBias, epoch, training=True):
+def x_squared_neural_network(inputData, hiddenWeights, hiddenBias, outputWeights, outputBias, epoch, training=True):
     for i in range(epoch):
 
         # Apply an actication function to the output of the nn
@@ -116,40 +128,48 @@ def setColor(testInput, testOutput):
             plt.scatter(testX[i], testY[i], color='black')
 
 
-trainOutput = x_or_neural_network(
+def getTrainCorrect(trainOuput, realOutput):
+    correct = 0
+    for i in range(len(realOutput)):
+        realOp = 1
+        if(round(realOutput[i][0]) == 0):
+            realOp = -1
+        if trainOuput[i] == realOp:
+            correct += 1
+    return correct / len(realOutput)
+
+
+def getTestCorrect(testInput, testOutput):
+    correct = 0
+    for i in range(len(testOutput)):
+        if testInput[i][0] ** 2 >= testInput[i][1]:
+            if round(testOutput[i][0]) == 0:
+                correct += 1
+        else:
+            if round(testOutput[i][0]) == 1:
+                correct += 1
+    return correct / len(testOutput)
+
+trainOutput = x_squared_neural_network(
     trainInput, hiddenWeights, hiddenBias, outputWeights, outputBias, epochs)
 
-for i in range(len(trainOutput)):
-    if(trainOutput[i][0] > .5):
-        print(trainInput[i], trainOutput[i][0])
-
-
-# Creating Test cases
-testInput = np.array([[0, 0]])
-xSpace = np.linspace(-2, 2, 30)
-ySpace = np.linspace(-2, 4, 30)
-for xP in xSpace:
-    for yP in ySpace:
-        if(xP == 0 and yP == 0):
-            pass
-        testInput = np.append(testInput, [[xP, yP]], axis=0)
-
-
-testOutput = x_or_neural_network(
+testOutput = x_squared_neural_network(
     testInput, hiddenWeights, hiddenBias, outputWeights, outputBias, 1, False)
 
 
-# Debugging loop for test output
-# for i in range(len(testOutput)):
-# 	print(testInput[i], testOutput[i][0])
+print('Train')
+print(getTrainCorrect(expectedOutput, trainOutput))
 
-x = trainInput[:, [0]]
-y = trainInput[:, [1]]
+print('Test')
+print(getTestCorrect(testInput, testOutput))
 
+# This code shows the parabola y = x^2
+x = np.linspace(-2, 2, 20)
 
 # Training Inputs are labeled with red triangles
 # Test Inputs are the circles
-setColor(testInput, testOutput)
-setColor(trainInput, trainOutput)
-plt.ylabel('Test Inputs')
+setColor(testInput, testOutput) # Uncomment this for test data
+# setColor(trainInput, trainOutput) # Uncomment this for training data
+plt.plot(x, x**2, color='red') # y = x ^ 2 line
+plt.ylabel('Training Inputs')
 plt.show()
