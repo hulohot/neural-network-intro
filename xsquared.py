@@ -172,5 +172,6 @@ x = np.linspace(-2, 2, 20)
 setColor(testInput, testOutput) # Uncomment this for test data
 # setColor(trainInput, trainOutput) # Uncomment this for training data
 plt.plot(x, x**2, color='red') # y = x ^ 2 line
-plt.ylabel('Training Inputs')
+plt.ylabel('Y')
+plt.xlabel('X')
 plt.show()

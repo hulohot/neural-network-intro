@@ -129,5 +129,6 @@ y = trainInput[:, [1]]
 # Test Inputs are the circles
 setColor(testInput, testOutput)
 plt.scatter(x, y, color='red', marker='^')
-plt.ylabel('Training Inputs')
+plt.ylabel('Y')
+plt.xlabel('X')
 plt.show()
